@@ -16,6 +16,10 @@ contextBridge.exposeInMainWorld("stepgoDesktop", {
   clearSession: (): Promise<boolean> => ipcRenderer.invoke("settings:clear-session"),
   apiRequest: (payload: ApiRequestPayload): Promise<ApiRequestResult> =>
     ipcRenderer.invoke("api:request", payload),
+  openConversation: (id: string, title?: string): Promise<boolean> =>
+    ipcRenderer.invoke("conversation:open", { id, title }),
+  setConversationTitle: (title: string): Promise<boolean> =>
+    ipcRenderer.invoke("conversation:set-title", title),
   showApp: (): Promise<boolean> => ipcRenderer.invoke("app:show"),
   updateQueue: (waitingCount: number) =>
     ipcRenderer.send("queue:update", { waitingCount }),

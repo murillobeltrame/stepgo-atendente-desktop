@@ -79,6 +79,8 @@ declare global {
       setSettings: (partial: Partial<AppSettings>) => Promise<boolean>;
       clearSession: () => Promise<boolean>;
       apiRequest: (payload: ApiRequestPayload) => Promise<ApiRequestResult>;
+      openConversation: (id: string, title?: string) => Promise<boolean>;
+      setConversationTitle: (title: string) => Promise<boolean>;
       showApp: () => Promise<boolean>;
       updateQueue: (waitingCount: number) => void;
       onNavigate: (callback: (path: string) => void) => () => void;

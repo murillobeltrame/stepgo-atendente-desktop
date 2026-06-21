@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Headphones, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { login, recoverTwoFactor, verifyTwoFactor } from "@/lib/api";
 import type { AdminInfo } from "@/types";
 
@@ -71,19 +71,13 @@ export function LoginPage({ apiBaseUrl, onLogin }: Props) {
     <div className="login-page">
       <div className="card login-card">
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-          <div
-            style={{
-              width: 42,
-              height: 42,
-              borderRadius: 12,
-              background: "rgba(37,99,235,0.1)",
-              color: "var(--brand)",
-              display: "grid",
-              placeItems: "center",
-            }}
-          >
-            <Headphones size={22} />
-          </div>
+          <img
+            src="/stepgo-icon.png"
+            alt="StepGo"
+            width={42}
+            height={42}
+            style={{ borderRadius: 12, objectFit: "contain" }}
+          />
           <div>
             <h2>StepGo Atendente</h2>
             <p style={{ margin: 0 }}>Entre com sua conta de administrador</p>

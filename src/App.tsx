@@ -1,9 +1,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { LogOut, Settings } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { ConversationPanel } from "@/components/ConversationPanel";
 import { LoginPage } from "@/components/LoginPage";
 import { SettingsPage } from "@/components/SettingsPage";
-import { SupportInbox } from "@/components/SupportInbox";
+import { SupportQueue } from "@/components/SupportQueue";
 import { configureApi } from "@/lib/api";
 import type { AdminInfo, AppSettings } from "@/types";
 
@@ -18,7 +19,14 @@ const queryClient = new QueryClient({
 
 type View = "inbox" | "settings";
 
+function getConversationIdFromUrl() {
+  return new URLSearchParams(window.location.search).get("conversation");
+}
+
 export function App() {
+  const conversationId = useMemo(() => getConversationIdFromUrl(), []);
+  const isConversationWindow = Boolean(conversationId);
+
   const [ready, setReady] = useState(false);
   const [settings, setSettings] = useState<AppSettings | null>(null);
   const [view, setView] = useState<View>("inbox");
@@ -37,10 +45,14 @@ export function App() {
       setReady(true);
     });
 
-    return window.stepgoDesktop.onNavigate((path) => {
-      if (path.includes("settings")) setView("settings");
-    });
-  }, []);
+    if (!isConversationWindow) {
+      return window.stepgoDesktop.onNavigate((path) => {
+        if (path.includes("settings")) setView("settings");
+      });
+    }
+
+    return undefined;
+  }, [isConversationWindow]);
 
   const handleLogin = async (token: string, loggedAdmin: AdminInfo) => {
     await window.stepgoDesktop.setSettings({
@@ -79,13 +91,18 @@ export function App() {
     return <LoginPage apiBaseUrl={settings.apiBaseUrl} onLogin={handleLogin} />;
   }
 
+  if (isConversationWindow && conversationId) {
+    return <ConversationPanel conversationId={conversationId} />;
+  }
+
   return (
     <div className="app-shell">
       <header className="app-header">
         <div>
           <h1>Atendimento humano</h1>
           <p>
-            Olá, {admin.name}. O app continua ativo na bandeja do Windows mesmo com a janela fechada.
+            Olá, {admin.name}. Cada atendimento abre em uma janela separada para você atender
+            vários ao mesmo tempo.
           </p>
         </div>
         <div className="header-actions">
@@ -108,7 +125,7 @@ export function App() {
           onBack={() => setView("inbox")}
         />
       ) : (
-        <SupportInbox onQueueUpdate={handleQueueUpdate} />
+        <SupportQueue onQueueUpdate={handleQueueUpdate} />
       )}
     </div>
   );

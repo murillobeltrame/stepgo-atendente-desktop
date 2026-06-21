@@ -119,11 +119,70 @@ function createTray() {
   });
 }
 
+const conversationWindows = new Map<string, BrowserWindow>();
+
+function loadRenderer(target: BrowserWindow, query?: Record<string, string>) {
+  if (isDev) {
+    const params = new URLSearchParams(query);
+    const suffix = params.toString() ? `?${params.toString()}` : "";
+    void target.loadURL(`http://localhost:5173${suffix}`);
+    return;
+  }
+
+  void target.loadFile(path.join(__dirname, "../dist/index.html"), { query });
+}
+
+function openConversationWindow(conversationId: string, title?: string) {
+  const existing = conversationWindows.get(conversationId);
+  if (existing && !existing.isDestroyed()) {
+    if (existing.isMinimized()) existing.restore();
+    existing.show();
+    existing.focus();
+    return true;
+  }
+
+  const conversationWindow = new BrowserWindow({
+    width: 760,
+    height: 720,
+    minWidth: 520,
+    minHeight: 560,
+    show: false,
+    autoHideMenuBar: true,
+    title: title ? `Atendimento — ${title}` : "Atendimento StepGo",
+    icon: path.join(__dirname, "../build/icon.png"),
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js"),
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
+    },
+  });
+
+  loadRenderer(conversationWindow, { conversation: conversationId });
+
+  conversationWindow.once("ready-to-show", () => {
+    conversationWindow.show();
+    conversationWindow.focus();
+  });
+
+  conversationWindow.on("closed", () => {
+    conversationWindows.delete(conversationId);
+  });
+
+  conversationWindow.webContents.setWindowOpenHandler(({ url }) => {
+    void shell.openExternal(url);
+    return { action: "deny" };
+  });
+
+  conversationWindows.set(conversationId, conversationWindow);
+  return true;
+}
+
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1180,
+    width: 460,
     height: 760,
-    minWidth: 900,
+    minWidth: 380,
     minHeight: 600,
     show: false,
     autoHideMenuBar: true,
@@ -138,10 +197,10 @@ function createWindow() {
   });
 
   if (isDev) {
-    mainWindow.loadURL("http://localhost:5173");
+    loadRenderer(mainWindow);
     mainWindow.webContents.openDevTools({ mode: "detach" });
   } else {
-    mainWindow.loadFile(path.join(__dirname, "../dist/index.html"));
+    loadRenderer(mainWindow);
   }
 
   mainWindow.once("ready-to-show", () => {
@@ -196,6 +255,18 @@ function registerIpc() {
   });
 
   ipcMain.handle("api:request", (_event, payload: ApiRequestPayload) => proxyApiRequest(payload));
+
+  ipcMain.handle("conversation:open", (_event, payload: { id: string; title?: string }) => {
+    if (!payload?.id) return false;
+    return openConversationWindow(payload.id, payload.title);
+  });
+
+  ipcMain.handle("conversation:set-title", (event, title: string) => {
+    const window = BrowserWindow.fromWebContents(event.sender);
+    if (!window || window === mainWindow) return false;
+    window.setTitle(title ? `Atendimento — ${title}` : "Atendimento StepGo");
+    return true;
+  });
 
   ipcMain.on("queue:update", (_event, payload: { waitingCount: number }) => {
     const count = payload.waitingCount ?? 0;

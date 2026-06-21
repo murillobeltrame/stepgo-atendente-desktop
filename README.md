@@ -78,4 +78,4 @@ stepgo-atendente-desktop/
 
 ## Ícones
 
-Execute `node scripts/generate-icons.mjs` para regenerar os ícones padrão em `build/`.
+Execute `node scripts/generate-icons.mjs` para regenerar os ícones a partir da marca StepGo (`build/brand/icon-source.png`).

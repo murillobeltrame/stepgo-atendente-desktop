@@ -191,6 +191,37 @@ button {
   min-height: 0;
 }
 
+.queue-layout {
+  flex: 1;
+  padding: 16px 20px 20px;
+  min-height: 0;
+}
+
+.queue-only {
+  min-height: calc(100vh - 92px);
+}
+
+.conversation-window {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #f1f5f9;
+}
+
+.conversation-window-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.conversation-window-messages {
+  flex: 1;
+  min-height: 0;
+}
+
 .inbox-sidebar,
 .inbox-chat {
   display: flex;
