@@ -6,7 +6,7 @@ import type { AdminInfo } from "@/types";
 
 type Props = {
   apiBaseUrl: string;
-  onLogin: (token: string, admin: AdminInfo) => void;
+  onLogin: (token: string, admin: AdminInfo) => Promise<void>;
 };
 
 type Step = "credentials" | "two-factor" | "recover";
@@ -21,6 +21,10 @@ export function LoginPage({ apiBaseUrl, onLogin }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const finishLogin = async (token: string, admin: AdminInfo) => {
+    await onLogin(token, admin);
+  };
+
   const handleCredentials = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
@@ -32,7 +36,7 @@ export function LoginPage({ apiBaseUrl, onLogin }: Props) {
         setStep("two-factor");
         return;
       }
-      onLogin(result.token, result.admin);
+      await finishLogin(result.token, result.admin);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Falha no login");
     } finally {
@@ -46,7 +50,7 @@ export function LoginPage({ apiBaseUrl, onLogin }: Props) {
     setError(null);
     try {
       const result = await verifyTwoFactor(pendingToken, code.trim());
-      onLogin(result.token, result.admin);
+      await finishLogin(result.token, result.admin);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Código inválido");
     } finally {
@@ -60,7 +64,7 @@ export function LoginPage({ apiBaseUrl, onLogin }: Props) {
     setError(null);
     try {
       const result = await recoverTwoFactor(pendingToken, backupCode.trim());
-      onLogin(result.token, result.admin);
+      await finishLogin(result.token, result.admin);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Código inválido");
     } finally {

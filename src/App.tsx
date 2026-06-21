@@ -59,7 +59,9 @@ export function App() {
       token,
       adminName: loggedAdmin.name,
     });
-    configureApi(settings?.apiBaseUrl ?? "https://stepgosistemas.com.br", token);
+    const next = await window.stepgoDesktop.getSettings();
+    setSettings(next);
+    configureApi(next.apiBaseUrl, token);
     setAdmin(loggedAdmin);
     setView("inbox");
     void queryClient.clear();
@@ -67,7 +69,9 @@ export function App() {
 
   const handleLogout = async () => {
     await window.stepgoDesktop.clearSession();
-    configureApi(settings?.apiBaseUrl ?? "https://stepgosistemas.com.br", null);
+    const next = await window.stepgoDesktop.getSettings();
+    setSettings(next);
+    configureApi(next.apiBaseUrl, null);
     setAdmin(null);
     void queryClient.clear();
   };
