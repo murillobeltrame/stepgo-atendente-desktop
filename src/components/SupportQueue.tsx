@@ -58,26 +58,28 @@ export function SupportQueue({ onQueueUpdate }: Props) {
     <div className="queue-layout">
       <section className="card inbox-sidebar queue-only">
         <div className="inbox-sidebar-header">
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+          <div className="queue-section-title">
             <Headphones size={16} color="var(--brand-dark)" />
-            <strong style={{ fontSize: "0.88rem", color: "var(--brand-dark)" }}>
-              Fila de atendimento
-            </strong>
+            <strong>Fila de atendimento</strong>
           </div>
-          <p style={{ margin: "0 0 12px", fontSize: "0.78rem", color: "var(--muted)" }}>
+          <p className="queue-section-hint">
             Clique em um atendimento para abrir em uma nova janela.
           </p>
-          <div className="filter-row">
-            {FILTERS.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                className={`filter-pill ${filter === item.id ? "active" : ""}`}
-                onClick={() => setFilter(item.id)}
-              >
-                {item.label}
-              </button>
-            ))}
+          <div className="filter-row-scroll">
+            <div className="filter-row" role="tablist" aria-label="Filtros da fila">
+              {FILTERS.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={filter === item.id}
+                  className={`filter-pill ${filter === item.id ? "active" : ""}`}
+                  onClick={() => setFilter(item.id)}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -99,8 +101,8 @@ export function SupportQueue({ onQueueUpdate }: Props) {
                 className="conversation-item"
                 onClick={() => openConversation(conversation)}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
-                  <div style={{ minWidth: 0 }}>
+                <div className="conversation-item-top">
+                  <div className="conversation-item-main">
                     <p className="conversation-title">
                       {conversation.storeUserName || conversation.storeSlug}
                     </p>

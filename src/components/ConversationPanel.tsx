@@ -168,28 +168,28 @@ export function ConversationPanel({ conversationId }: Props) {
   return (
     <div className="conversation-window">
       <div className="inbox-chat-header conversation-window-header">
-        <div>
-          <p style={{ margin: 0, fontWeight: 600, color: "var(--brand-dark)" }}>
+        <div className="conversation-window-intro">
+          <p className="conversation-window-title">
             {selected.storeUserName || "Lojista"} · {selected.storeSlug}
           </p>
-          <p style={{ margin: "4px 0 0", fontSize: "0.78rem", color: "var(--muted)" }}>
+          <p className="conversation-window-meta">
             {statusLabel(selected.status)}
             {selected.assignedAdminName
               ? ` · Atendente: ${selected.assignedAdminName}`
               : " · Aguardando atendente"}
           </p>
           {selected.rating ? (
-            <div style={{ marginTop: 8, display: "flex", gap: 8, alignItems: "center" }}>
+            <div className="conversation-window-rating">
               {renderStars(selected.rating)}
               {selected.ratingComment ? (
-                <span style={{ fontSize: "0.78rem", color: "var(--muted)" }}>
+                <span className="conversation-window-rating-comment">
                   “{selected.ratingComment}”
                 </span>
               ) : null}
             </div>
           ) : null}
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
+        <div className="conversation-window-actions">
           {selected.status !== "CLOSED" && selected.assignedAdminId !== currentAdmin?.id ? (
             <button
               type="button"

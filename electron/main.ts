@@ -221,10 +221,10 @@ function openConversationWindow(conversationId: string, title?: string) {
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 460,
-    height: 760,
-    minWidth: 380,
-    minHeight: 600,
+    width: 520,
+    height: 780,
+    minWidth: 360,
+    minHeight: 560,
     show: false,
     autoHideMenuBar: true,
     title: "StepGo Atendente",

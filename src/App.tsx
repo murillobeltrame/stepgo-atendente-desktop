@@ -102,7 +102,7 @@ export function App() {
   return (
     <div className="app-shell">
       <header className="app-header">
-        <div>
+        <div className="app-header-intro">
           <h1>Atendimento humano</h1>
           <p>
             Olá, {admin.name}. Cada atendimento abre em uma janela separada para você atender
@@ -113,11 +113,11 @@ export function App() {
           <span className="status-badge">Online</span>
           <button type="button" className="btn btn-secondary" onClick={() => setView("settings")}>
             <Settings size={16} />
-            Configurações
+            <span className="btn-label">Configurações</span>
           </button>
           <button type="button" className="btn btn-ghost" onClick={() => void handleLogout()}>
             <LogOut size={16} />
-            Sair
+            <span className="btn-label">Sair</span>
           </button>
         </div>
       </header>
