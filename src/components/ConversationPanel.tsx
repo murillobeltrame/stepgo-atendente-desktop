@@ -81,11 +81,13 @@ export function ConversationPanel({ conversationId }: Props) {
   const [viewerImage, setViewerImage] = useState<{ url: string; alt: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const replyInputRef = useRef<HTMLTextAreaElement>(null);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const messagesRef = useRef<HTMLDivElement>(null);
 
   const focusReplyInput = useCallback(() => {
     requestAnimationFrame(() => {
-      replyInputRef.current?.focus();
+      requestAnimationFrame(() => {
+        replyInputRef.current?.focus({ preventScroll: true });
+      });
     });
   }, []);
 
@@ -108,7 +110,9 @@ export function ConversationPanel({ conversationId }: Props) {
   }, [selected?.id, selected?.storeSlug, selected?.storeUserName]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    const container = messagesRef.current;
+    if (!container) return;
+    container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
   }, [selected?.messages?.length, conversationId]);
 
   const invalidate = () => {
@@ -223,7 +227,7 @@ export function ConversationPanel({ conversationId }: Props) {
         </div>
       </div>
 
-      <div className="messages conversation-window-messages">
+      <div ref={messagesRef} className="messages conversation-window-messages">
         {(selected.messages ?? []).map((message) => {
           const role =
             message.senderType === "SYSTEM"
@@ -255,7 +259,6 @@ export function ConversationPanel({ conversationId }: Props) {
             </div>
           );
         })}
-        <div ref={bottomRef} />
       </div>
 
       {selected.status !== "CLOSED" ? (

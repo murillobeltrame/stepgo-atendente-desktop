@@ -259,7 +259,9 @@ button {
 .conversation-window {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
   background: #f1f5f9;
 }
 
@@ -504,6 +506,8 @@ button {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  flex-shrink: 0;
+  background: #fff;
 }
 
 .composer-row {
