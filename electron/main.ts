@@ -20,9 +20,22 @@ type AppSettings = {
   soundEnabled: boolean;
 };
 
+function normalizeApiBaseUrl(url: string) {
+  const trimmed = url.trim().replace(/\/$/, "");
+  if (
+    trimmed === "https://stepgo.com.br" ||
+    trimmed === "http://stepgo.com.br" ||
+    trimmed === "https://www.stepgo.com.br" ||
+    trimmed === "http://www.stepgo.com.br"
+  ) {
+    return "https://stepgosistemas.com.br";
+  }
+  return trimmed || "https://stepgosistemas.com.br";
+}
+
 const store = new Store<AppSettings>({
   defaults: {
-    apiBaseUrl: "https://stepgo.com.br",
+    apiBaseUrl: "https://stepgosistemas.com.br",
     token: null,
     adminName: null,
     autoStartMinimized: true,
@@ -224,16 +237,25 @@ function createWindow() {
 }
 
 function registerIpc() {
-  ipcMain.handle("settings:get", () => ({
-    apiBaseUrl: store.get("apiBaseUrl"),
+  ipcMain.handle("settings:get", () => {
+    const apiBaseUrl = normalizeApiBaseUrl(store.get("apiBaseUrl"));
+    if (apiBaseUrl !== store.get("apiBaseUrl")) {
+      store.set("apiBaseUrl", apiBaseUrl);
+    }
+
+    return {
+      apiBaseUrl,
     token: store.get("token"),
     adminName: store.get("adminName"),
     autoStartMinimized: store.get("autoStartMinimized"),
     soundEnabled: store.get("soundEnabled"),
-  }));
+    };
+  });
 
   ipcMain.handle("settings:set", (_event, partial: Partial<AppSettings>) => {
-    if (partial.apiBaseUrl !== undefined) store.set("apiBaseUrl", partial.apiBaseUrl);
+    if (partial.apiBaseUrl !== undefined) {
+      store.set("apiBaseUrl", normalizeApiBaseUrl(partial.apiBaseUrl));
+    }
     if (partial.token !== undefined) store.set("token", partial.token);
     if (partial.adminName !== undefined) store.set("adminName", partial.adminName);
     if (partial.autoStartMinimized !== undefined) {

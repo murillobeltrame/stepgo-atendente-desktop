@@ -1,6 +1,6 @@
 import type { AdminInfo, InboxFilter, PendingAttachment, SupportConversation } from "@/types";
 
-let apiBaseUrl = "https://stepgo.com.br";
+let apiBaseUrl = "https://stepgosistemas.com.br";
 let authToken: string | null = null;
 
 export function configureApi(baseUrl: string, token: string | null) {
@@ -31,7 +31,7 @@ async function request<T>(path: string, init?: JsonRequestInit): Promise<T> {
           "Não foi possível conectar ao servidor. Verifique a URL em Configurações e sua internet.",
       );
     }
-    throw new Error(json.error ?? `Erro ${result.status}`);
+    throw new Error((json.error as string | undefined) ?? `Erro ${result.status}`);
   }
 
   return json;
