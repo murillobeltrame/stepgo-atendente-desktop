@@ -31,7 +31,15 @@ O app abre em modo desenvolvimento com hot reload. Na primeira execução, confi
 npm run dist
 ```
 
-O instalador será gerado em `release/StepGo Atendente Setup x.x.x.exe`.
+O instalador será gerado em:
+
+```
+%LOCALAPPDATA%\stepgo-atendente-desktop\release\
+```
+
+Exemplo: `C:\Users\SeuUsuario\AppData\Local\stepgo-atendente-desktop\release\`
+
+> Se existir uma pasta `release/` antiga dentro do projeto (OneDrive), você pode apagá-la manualmente — ela não é mais usada.
 
 ## Uso diário
 

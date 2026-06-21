@@ -9,8 +9,8 @@
   "scripts": {
     "dev": "vite",
     "build": "node scripts/generate-icons.mjs && vite build",
-    "dist": "npm run build && electron-builder --win",
-    "dist:portable": "npm run build && electron-builder --win portable",
+    "dist": "npm run build && node scripts/dist-win.mjs",
+    "dist:portable": "npm run build && node scripts/dist-win.mjs --portable",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.electron.json --noEmit"
   },
@@ -43,7 +43,9 @@
     },
     "files": [
       "dist/**/*",
-      "dist-electron/**/*"
+      "dist-electron/**/*",
+      "build/icon.png",
+      "build/tray.png"
     ],
     "win": {
       "target": [
@@ -52,7 +54,7 @@
           "arch": ["x64"]
         }
       ],
-      "icon": "build/icon.ico"
+      "icon": "build/icon.png"
     },
     "nsis": {
       "oneClick": false,

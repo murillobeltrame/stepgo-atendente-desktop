@@ -66,27 +66,8 @@ const brandBlue = [37, 99, 235];
 fs.writeFileSync(path.join(buildDir, "icon.png"), createPng(256, ...brandBlue));
 fs.writeFileSync(path.join(buildDir, "tray.png"), createPng(32, ...brandBlue));
 
-// ICO mínimo com um PNG embutido (Windows aceita PNG dentro de ICO em versões recentes)
-const png256 = fs.readFileSync(path.join(buildDir, "icon.png"));
-const icoHeader = Buffer.alloc(6);
-icoHeader.writeUInt16LE(0, 0);
-icoHeader.writeUInt16LE(1, 2);
-icoHeader.writeUInt16LE(1, 4);
-
-const entry = Buffer.alloc(16);
-entry[0] = 0;
-entry[1] = 0;
-entry[2] = 0;
-entry[3] = 0;
-entry[4] = 256 % 256;
-entry[5] = 256 / 256;
-entry[6] = 0;
-entry[7] = 0;
-entry[8] = 1;
-entry[9] = 0;
-entry[10] = 32;
-entry.writeUInt32LE(22, 12);
-
-fs.writeFileSync(path.join(buildDir, "icon.ico"), Buffer.concat([icoHeader, entry, png256]));
+// Remove ICO legado inválido, se existir — o electron-builder converte o PNG.
+const legacyIco = path.join(buildDir, "icon.ico");
+if (fs.existsSync(legacyIco)) fs.unlinkSync(legacyIco);
 
 console.log("Ícones gerados em build/");
