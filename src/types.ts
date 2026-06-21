@@ -82,6 +82,7 @@ declare global {
       openConversation: (id: string, title?: string) => Promise<boolean>;
       setConversationTitle: (title: string) => Promise<boolean>;
       showApp: () => Promise<boolean>;
+      openExternalUrl: (url: string) => Promise<boolean>;
       updateQueue: (waitingCount: number) => void;
       onNavigate: (callback: (path: string) => void) => () => void;
     };

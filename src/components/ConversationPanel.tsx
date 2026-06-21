@@ -8,6 +8,7 @@ import {
   sendMessage,
   uploadAttachment,
 } from "@/lib/api";
+import { ImageViewer } from "@/components/ImageViewer";
 import type { PendingAttachment, SupportMessage } from "@/types";
 
 function statusLabel(status: "WAITING" | "ACTIVE" | "CLOSED") {
@@ -32,31 +33,38 @@ function renderStars(rating: number | null | undefined) {
   );
 }
 
-function MessageAttachment({ message }: { message: SupportMessage }) {
+function MessageAttachment({
+  message,
+  onOpenImage,
+}: {
+  message: SupportMessage;
+  onOpenImage: (url: string, alt: string) => void;
+}) {
   if (!message.attachmentUrl) return null;
 
   if (message.attachmentMimeType?.startsWith("image/")) {
     return (
-      <a
+      <button
+        type="button"
         className="attachment-thumb"
-        href={message.attachmentUrl}
-        target="_blank"
-        rel="noreferrer"
+        onClick={() =>
+          onOpenImage(message.attachmentUrl!, message.attachmentFileName ?? "Imagem anexada")
+        }
+        title="Abrir imagem"
       >
         <img src={message.attachmentUrl} alt={message.attachmentFileName ?? "Anexo"} />
-      </a>
+      </button>
     );
   }
 
   return (
-    <a
-      href={message.attachmentUrl}
-      target="_blank"
-      rel="noreferrer"
-      style={{ display: "inline-block", marginBottom: 8, fontSize: "0.78rem" }}
+    <button
+      type="button"
+      className="attachment-file-link"
+      onClick={() => window.stepgoDesktop.openExternalUrl(message.attachmentUrl!)}
     >
       📎 {message.attachmentFileName ?? "Anexo"}
-    </a>
+    </button>
   );
 }
 
@@ -69,6 +77,7 @@ export function ConversationPanel({ conversationId }: Props) {
   const [reply, setReply] = useState("");
   const [pendingAttachment, setPendingAttachment] = useState<PendingAttachment | null>(null);
   const [uploadingAttachment, setUploadingAttachment] = useState(false);
+  const [viewerImage, setViewerImage] = useState<{ url: string; alt: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -222,7 +231,10 @@ export function ConversationPanel({ conversationId }: Props) {
                     {message.senderName}
                   </p>
                 ) : null}
-                <MessageAttachment message={message} />
+                <MessageAttachment
+                  message={message}
+                  onOpenImage={(url, alt) => setViewerImage({ url, alt })}
+                />
                 {message.body ? <p style={{ margin: 0 }}>{message.body}</p> : null}
                 <p className="message-time">
                   {new Date(message.createdAt).toLocaleTimeString("pt-BR", {
@@ -261,7 +273,19 @@ export function ConversationPanel({ conversationId }: Props) {
           {pendingAttachment ? (
             <div className="pending-attachment">
               {pendingAttachment.previewUrl ? (
-                <img src={pendingAttachment.previewUrl} alt="" />
+                <button
+                  type="button"
+                  className="attachment-thumb"
+                  onClick={() =>
+                    setViewerImage({
+                      url: pendingAttachment.previewUrl!,
+                      alt: pendingAttachment.fileName,
+                    })
+                  }
+                  title="Abrir imagem"
+                >
+                  <img src={pendingAttachment.previewUrl} alt="" />
+                </button>
               ) : null}
               <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis" }}>
                 {pendingAttachment.fileName}
@@ -311,6 +335,14 @@ export function ConversationPanel({ conversationId }: Props) {
             </button>
           </div>
         </form>
+      ) : null}
+
+      {viewerImage ? (
+        <ImageViewer
+          url={viewerImage.url}
+          alt={viewerImage.alt}
+          onClose={() => setViewerImage(null)}
+        />
       ) : null}
     </div>
   );

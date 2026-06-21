@@ -93,8 +93,58 @@ async function main() {
   await writePng(source, 32, path.join(buildDir, "tray.png"));
   await writePng(source, 128, path.join(publicDir, "stepgo-icon.png"));
   await writeIco(source, path.join(brandDir, "favicon.ico"), [16, 32, 48, 256]);
+  writeNotificationSound(path.join(buildDir, "notification.wav"));
 
   console.log(`Ícones StepGo gerados a partir de: ${source}`);
+}
+
+function writeNotificationSound(outputPath) {
+  const sampleRate = 44100;
+  const tones = [
+    { frequency: 880, duration: 0.1 },
+    { frequency: 1175, duration: 0.14 },
+  ];
+  const gapSeconds = 0.05;
+  const samples = [];
+
+  for (const [index, tone] of tones.entries()) {
+    const toneSamples = Math.floor(sampleRate * tone.duration);
+    for (let i = 0; i < toneSamples; i += 1) {
+      const t = i / sampleRate;
+      const attack = Math.min(1, t * 60);
+      const release = Math.exp(-10 * t / tone.duration);
+      samples.push(Math.sin(2 * Math.PI * tone.frequency * t) * attack * release * 0.35);
+    }
+
+    if (index < tones.length - 1) {
+      const gapSamples = Math.floor(sampleRate * gapSeconds);
+      for (let i = 0; i < gapSamples; i += 1) samples.push(0);
+    }
+  }
+
+  const dataSize = samples.length * 2;
+  const buffer = Buffer.alloc(44 + dataSize);
+
+  buffer.write("RIFF", 0);
+  buffer.writeUInt32LE(36 + dataSize, 4);
+  buffer.write("WAVE", 8);
+  buffer.write("fmt ", 12);
+  buffer.writeUInt32LE(16, 16);
+  buffer.writeUInt16LE(1, 20);
+  buffer.writeUInt16LE(1, 22);
+  buffer.writeUInt32LE(sampleRate, 24);
+  buffer.writeUInt32LE(sampleRate * 2, 28);
+  buffer.writeUInt16LE(2, 32);
+  buffer.writeUInt16LE(16, 34);
+  buffer.write("data", 36);
+  buffer.writeUInt32LE(dataSize, 40);
+
+  samples.forEach((sample, index) => {
+    const clamped = Math.max(-1, Math.min(1, sample));
+    buffer.writeInt16LE(Math.round(clamped * 32767), 44 + index * 2);
+  });
+
+  fs.writeFileSync(outputPath, buffer);
 }
 
 main().catch((error) => {

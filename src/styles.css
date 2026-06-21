@@ -410,13 +410,54 @@ button {
   border: none;
   padding: 0;
   background: transparent;
+  cursor: zoom-in;
 }
 
 .attachment-thumb img {
   max-width: 220px;
   max-height: 180px;
+  object-fit: cover;
   border-radius: 10px;
   border: 1px solid var(--border);
+  display: block;
+}
+
+.attachment-file-link {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--brand);
+  font-size: 0.78rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.image-viewer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.88);
+}
+
+.image-viewer-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 1001;
+}
+
+.image-viewer-content {
+  max-width: min(96vw, 1200px);
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
 }
 
 .stars {

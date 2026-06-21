@@ -21,6 +21,8 @@ contextBridge.exposeInMainWorld("stepgoDesktop", {
   setConversationTitle: (title: string): Promise<boolean> =>
     ipcRenderer.invoke("conversation:set-title", title),
   showApp: (): Promise<boolean> => ipcRenderer.invoke("app:show"),
+  openExternalUrl: (url: string): Promise<boolean> =>
+    ipcRenderer.invoke("shell:open-external", url),
   updateQueue: (waitingCount: number) =>
     ipcRenderer.send("queue:update", { waitingCount }),
   onNavigate: (callback: (path: string) => void) => {

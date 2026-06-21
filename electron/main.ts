@@ -8,6 +8,8 @@ import {
   ipcMain,
   shell,
 } from "electron";
+import { execFile } from "node:child_process";
+import fs from "node:fs";
 import path from "node:path";
 import Store from "electron-store";
 import { proxyApiRequest, type ApiRequestPayload } from "./api-proxy";
@@ -47,6 +49,7 @@ let mainWindow: BrowserWindow | null = null;
 let tray: Tray | null = null;
 let isQuitting = false;
 let lastWaitingCount = 0;
+let queueTrackingReady = false;
 
 const isDev = !app.isPackaged;
 
@@ -115,6 +118,31 @@ function updateTrayTooltip(waitingCount: number) {
     waitingCount > 0 ? `${base} — ${waitingCount} na fila` : `${base} — online`,
   );
   tray.setContextMenu(buildTrayMenu());
+}
+
+function getNotificationSoundPath() {
+  return path.join(__dirname, "../build/notification.wav");
+}
+
+function playNewAttendanceSound() {
+  if (!store.get("soundEnabled")) return;
+
+  const soundPath = getNotificationSoundPath();
+  if (!fs.existsSync(soundPath) || process.platform !== "win32") return;
+
+  const escapedPath = soundPath.replace(/'/g, "''");
+  execFile(
+    "powershell.exe",
+    [
+      "-NoProfile",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-Command",
+      `(New-Object System.Media.SoundPlayer '${escapedPath}').Play()`,
+    ],
+    { windowsHide: true },
+    () => {},
+  );
 }
 
 function createTray() {
@@ -276,6 +304,14 @@ function registerIpc() {
     return true;
   });
 
+  ipcMain.handle("shell:open-external", (_event, url: string) => {
+    if (typeof url === "string" && /^https?:\/\//i.test(url)) {
+      void shell.openExternal(url);
+      return true;
+    }
+    return false;
+  });
+
   ipcMain.handle("api:request", (_event, payload: ApiRequestPayload) => proxyApiRequest(payload));
 
   ipcMain.handle("conversation:open", (_event, payload: { id: string; title?: string }) => {
@@ -292,16 +328,23 @@ function registerIpc() {
 
   ipcMain.on("queue:update", (_event, payload: { waitingCount: number }) => {
     const count = payload.waitingCount ?? 0;
-    if (count > lastWaitingCount && Notification.isSupported()) {
-      new Notification({
-        title: "Novo atendimento na fila",
-        body:
-          count === 1
-            ? "1 lojista aguardando atendimento humano."
-            : `${count} lojistas aguardando atendimento humano.`,
-        silent: !store.get("soundEnabled"),
-      }).show();
+    const hasNewWaiting = queueTrackingReady && count > lastWaitingCount;
+
+    if (hasNewWaiting) {
+      if (Notification.isSupported()) {
+        new Notification({
+          title: "Novo atendimento na fila",
+          body:
+            count === 1
+              ? "1 lojista aguardando atendimento humano."
+              : `${count} lojistas aguardando atendimento humano.`,
+          silent: true,
+        }).show();
+      }
+      playNewAttendanceSound();
     }
+
+    queueTrackingReady = true;
     updateTrayTooltip(count);
   });
 }

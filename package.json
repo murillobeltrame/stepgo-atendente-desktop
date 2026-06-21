@@ -47,6 +47,7 @@
       "dist-electron/**/*",
       "build/icon.png",
       "build/tray.png",
+      "build/notification.wav",
       "build/brand/**/*",
       "public/stepgo-icon.png"
     ],
