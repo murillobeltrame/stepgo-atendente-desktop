@@ -8,21 +8,43 @@ export function configureApi(baseUrl: string, token: string | null) {
   authToken = token;
 }
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const headers = new Headers(init?.headers);
-  if (authToken) headers.set("Authorization", `Bearer ${authToken}`);
-  if (init?.body && !(init.body instanceof FormData)) {
-    headers.set("Content-Type", "application/json");
-  }
+type JsonRequestInit = {
+  method?: string;
+  jsonBody?: unknown;
+};
 
-  const res = await fetch(`${apiBaseUrl}${path}`, { ...init, headers });
-  const json = (await res.json().catch(() => ({}))) as T & { error?: string };
+async function request<T>(path: string, init?: JsonRequestInit): Promise<T> {
+  const result = await window.stepgoDesktop.apiRequest({
+    baseUrl: apiBaseUrl,
+    path,
+    method: init?.method,
+    token: authToken,
+    jsonBody: init?.jsonBody,
+  });
 
-  if (!res.ok) {
-    throw new Error(json.error ?? `Erro ${res.status}`);
+  const json = result.data as T & { error?: string };
+
+  if (!result.ok) {
+    if (result.status === 0) {
+      throw new Error(
+        (json.error as string | undefined) ??
+          "Não foi possível conectar ao servidor. Verifique a URL em Configurações e sua internet.",
+      );
+    }
+    throw new Error(json.error ?? `Erro ${result.status}`);
   }
 
   return json;
+}
+
+async function fileToBase64(file: File): Promise<string> {
+  const buffer = await file.arrayBuffer();
+  const bytes = new Uint8Array(buffer);
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += 1) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
 }
 
 export type LoginResult =
@@ -37,9 +59,9 @@ export async function login(email: string, password: string): Promise<LoginResul
     requiresTwoFactor?: boolean;
     pendingToken?: string;
     error?: string;
-  }>("/api/admin/desktop/login", {
+  }>("/api/admin/login", {
     method: "POST",
-    body: JSON.stringify({ email, password }),
+    jsonBody: { email, password },
   });
 
   if (json.requiresTwoFactor && json.pendingToken) {
@@ -47,32 +69,44 @@ export async function login(email: string, password: string): Promise<LoginResul
   }
 
   if (!json.token || !json.admin) {
-    throw new Error("Resposta de login inválida");
+    throw new Error(
+      "O servidor não retornou a sessão do desktop. Atualize o site StepGo para a versão mais recente.",
+    );
   }
 
   return { kind: "success", token: json.token, admin: json.admin };
 }
 
 export async function verifyTwoFactor(pendingToken: string, code: string) {
-  const json = await request<{ token: string; admin: AdminInfo }>(
-    "/api/admin/desktop/login/2fa/verify",
+  const json = await request<{ token?: string; admin?: AdminInfo; error?: string }>(
+    "/api/admin/login/2fa/verify",
     {
       method: "POST",
-      body: JSON.stringify({ pendingToken, code }),
+      jsonBody: { pendingToken, code },
     },
   );
-  return json;
+
+  if (!json.token || !json.admin) {
+    throw new Error(json.error ?? "Resposta de verificação inválida");
+  }
+
+  return { token: json.token, admin: json.admin };
 }
 
 export async function recoverTwoFactor(pendingToken: string, backupCode: string) {
-  const json = await request<{ token: string; admin: AdminInfo }>(
-    "/api/admin/desktop/login/2fa/recover",
+  const json = await request<{ token?: string; admin?: AdminInfo; error?: string }>(
+    "/api/admin/login/2fa/recover",
     {
       method: "POST",
-      body: JSON.stringify({ pendingToken, backupCode }),
+      jsonBody: { pendingToken, backupCode },
     },
   );
-  return json;
+
+  if (!json.token || !json.admin) {
+    throw new Error(json.error ?? "Resposta de recuperação inválida");
+  }
+
+  return { token: json.token, admin: json.admin };
 }
 
 export async function fetchInbox(filter: InboxFilter) {
@@ -104,7 +138,7 @@ export async function sendMessage(
 ) {
   return request(`/api/admin/support/conversations/${id}/messages`, {
     method: "POST",
-    body: JSON.stringify({
+    jsonBody: {
       body,
       attachment: attachment
         ? {
@@ -114,16 +148,31 @@ export async function sendMessage(
             sizeBytes: attachment.sizeBytes,
           }
         : undefined,
-    }),
+    },
   });
 }
 
 export async function uploadAttachment(file: File, storeSlug: string) {
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("storeSlug", storeSlug);
-  return request<{ attachment: PendingAttachment }>("/api/admin/support/attachments", {
+  const result = await window.stepgoDesktop.apiRequest({
+    baseUrl: apiBaseUrl,
+    path: "/api/admin/support/attachments",
     method: "POST",
-    body: formData,
+    token: authToken,
+    multipart: {
+      fields: { storeSlug },
+      file: {
+        fieldName: "file",
+        fileName: file.name,
+        mimeType: file.type || "application/octet-stream",
+        base64: await fileToBase64(file),
+      },
+    },
   });
+
+  const json = result.data as { attachment?: PendingAttachment; error?: string };
+  if (!result.ok || !json.attachment) {
+    throw new Error(json.error ?? "Falha ao enviar arquivo");
+  }
+
+  return { attachment: json.attachment };
 }

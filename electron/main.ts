@@ -10,6 +10,7 @@ import {
 } from "electron";
 import path from "node:path";
 import Store from "electron-store";
+import { proxyApiRequest, type ApiRequestPayload } from "./api-proxy";
 
 type AppSettings = {
   apiBaseUrl: string;
@@ -193,6 +194,8 @@ function registerIpc() {
     showMainWindow();
     return true;
   });
+
+  ipcMain.handle("api:request", (_event, payload: ApiRequestPayload) => proxyApiRequest(payload));
 
   ipcMain.on("queue:update", (_event, payload: { waitingCount: number }) => {
     const count = payload.waitingCount ?? 0;

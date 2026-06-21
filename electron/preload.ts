@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
+import type { ApiRequestPayload, ApiRequestResult } from "./api-proxy";
 
 export type AppSettings = {
   apiBaseUrl: string;
@@ -13,6 +14,8 @@ contextBridge.exposeInMainWorld("stepgoDesktop", {
   setSettings: (partial: Partial<AppSettings>): Promise<boolean> =>
     ipcRenderer.invoke("settings:set", partial),
   clearSession: (): Promise<boolean> => ipcRenderer.invoke("settings:clear-session"),
+  apiRequest: (payload: ApiRequestPayload): Promise<ApiRequestResult> =>
+    ipcRenderer.invoke("api:request", payload),
   showApp: (): Promise<boolean> => ipcRenderer.invoke("app:show"),
   updateQueue: (waitingCount: number) =>
     ipcRenderer.send("queue:update", { waitingCount }),

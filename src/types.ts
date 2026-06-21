@@ -49,12 +49,36 @@ export type AppSettings = {
   soundEnabled: boolean;
 };
 
+export type ApiRequestPayload = {
+  baseUrl: string;
+  path: string;
+  method?: string;
+  token?: string | null;
+  jsonBody?: unknown;
+  multipart?: {
+    fields: Record<string, string>;
+    file: {
+      fieldName: string;
+      fileName: string;
+      mimeType: string;
+      base64: string;
+    };
+  };
+};
+
+export type ApiRequestResult = {
+  ok: boolean;
+  status: number;
+  data: unknown;
+};
+
 declare global {
   interface Window {
     stepgoDesktop: {
       getSettings: () => Promise<AppSettings>;
       setSettings: (partial: Partial<AppSettings>) => Promise<boolean>;
       clearSession: () => Promise<boolean>;
+      apiRequest: (payload: ApiRequestPayload) => Promise<ApiRequestResult>;
       showApp: () => Promise<boolean>;
       updateQueue: (waitingCount: number) => void;
       onNavigate: (callback: (path: string) => void) => () => void;
