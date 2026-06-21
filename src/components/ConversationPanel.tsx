@@ -8,6 +8,7 @@ import {
   sendMessage,
   uploadAttachment,
 } from "@/lib/api";
+import { handleSupportComposerKeyDown } from "@/lib/composer-keydown";
 import { ImageViewer } from "@/components/ImageViewer";
 import type { PendingAttachment, SupportMessage } from "@/types";
 
@@ -317,6 +318,13 @@ export function ConversationPanel({ conversationId }: Props) {
             <textarea
               value={reply}
               onChange={(e) => setReply(e.target.value)}
+              onKeyDown={(event) => {
+                if (!canReply || replyMutation.isPending || uploadingAttachment) return;
+                handleSupportComposerKeyDown(event, () => {
+                  if (!reply.trim() && !pendingAttachment) return;
+                  replyMutation.mutate();
+                });
+              }}
               placeholder={canReply ? "Digite sua resposta…" : "Assuma o atendimento para responder"}
               rows={2}
               disabled={!canReply || replyMutation.isPending}
