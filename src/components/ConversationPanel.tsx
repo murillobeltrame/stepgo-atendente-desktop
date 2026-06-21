@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ImagePlus, Loader2, Send, Star, XCircle } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   claimConversation,
   closeConversation,
@@ -80,7 +80,14 @@ export function ConversationPanel({ conversationId }: Props) {
   const [uploadingAttachment, setUploadingAttachment] = useState(false);
   const [viewerImage, setViewerImage] = useState<{ url: string; alt: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const replyInputRef = useRef<HTMLTextAreaElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  const focusReplyInput = useCallback(() => {
+    requestAnimationFrame(() => {
+      replyInputRef.current?.focus();
+    });
+  }, []);
 
   const conversationQuery = useQuery({
     queryKey: ["support-conversation", conversationId],
@@ -132,6 +139,7 @@ export function ConversationPanel({ conversationId }: Props) {
         return null;
       });
       invalidate();
+      focusReplyInput();
     },
   });
 
@@ -316,6 +324,7 @@ export function ConversationPanel({ conversationId }: Props) {
               {uploadingAttachment ? <Loader2 size={16} /> : <ImagePlus size={16} />}
             </button>
             <textarea
+              ref={replyInputRef}
               value={reply}
               onChange={(e) => setReply(e.target.value)}
               onKeyDown={(event) => {
@@ -327,7 +336,7 @@ export function ConversationPanel({ conversationId }: Props) {
               }}
               placeholder={canReply ? "Digite sua resposta…" : "Assuma o atendimento para responder"}
               rows={2}
-              disabled={!canReply || replyMutation.isPending}
+              disabled={!canReply}
             />
             <button
               type="submit"
