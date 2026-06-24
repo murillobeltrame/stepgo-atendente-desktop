@@ -30,14 +30,14 @@ function normalizeApiBaseUrl(url: string) {
     trimmed === "https://www.stepgo.com.br" ||
     trimmed === "http://www.stepgo.com.br"
   ) {
-    return "https://stepgosistemas.com.br";
+    return "https://nivesistemas.com.br";
   }
-  return trimmed || "https://stepgosistemas.com.br";
+  return trimmed || "https://nivesistemas.com.br";
 }
 
 const store = new Store<AppSettings>({
   defaults: {
-    apiBaseUrl: "https://stepgosistemas.com.br",
+    apiBaseUrl: "https://nivesistemas.com.br",
     token: null,
     adminName: null,
     autoStartMinimized: true,

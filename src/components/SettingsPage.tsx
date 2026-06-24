@@ -47,7 +47,7 @@ export function SettingsPage({ settings, onSave, onBack }: Props) {
               id="api-url"
               value={apiBaseUrl}
               onChange={(e) => setApiBaseUrl(e.target.value)}
-              placeholder="https://stepgosistemas.com.br"
+              placeholder="https://nivesistemas.com.br"
               required
             />
             <span style={{ fontSize: "0.75rem", color: "var(--muted)" }}>

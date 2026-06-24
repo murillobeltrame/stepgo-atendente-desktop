@@ -1,6 +1,6 @@
 import type { AdminInfo, InboxFilter, PendingAttachment, SupportConversation } from "@/types";
 
-let apiBaseUrl = "https://stepgosistemas.com.br";
+let apiBaseUrl = "https://nivesistemas.com.br";
 let authToken: string | null = null;
 
 export function configureApi(baseUrl: string, token: string | null) {
