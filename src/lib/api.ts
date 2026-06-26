@@ -59,7 +59,7 @@ export async function login(email: string, password: string): Promise<LoginResul
     requiresTwoFactor?: boolean;
     pendingToken?: string;
     error?: string;
-  }>("/api/admin/login", {
+  }>("/api/admin/desktop/login", {
     method: "POST",
     jsonBody: { email, password },
   });
@@ -79,7 +79,7 @@ export async function login(email: string, password: string): Promise<LoginResul
 
 export async function verifyTwoFactor(pendingToken: string, code: string) {
   const json = await request<{ token?: string; admin?: AdminInfo; error?: string }>(
-    "/api/admin/login/2fa/verify",
+    "/api/admin/desktop/login/2fa/verify",
     {
       method: "POST",
       jsonBody: { pendingToken, code },
@@ -95,7 +95,7 @@ export async function verifyTwoFactor(pendingToken: string, code: string) {
 
 export async function recoverTwoFactor(pendingToken: string, backupCode: string) {
   const json = await request<{ token?: string; admin?: AdminInfo; error?: string }>(
-    "/api/admin/login/2fa/recover",
+    "/api/admin/desktop/login/2fa/recover",
     {
       method: "POST",
       jsonBody: { pendingToken, backupCode },

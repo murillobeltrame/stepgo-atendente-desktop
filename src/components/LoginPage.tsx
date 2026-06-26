@@ -140,7 +140,12 @@ export function LoginPage({ apiBaseUrl, onLogin }: Props) {
                 required
               />
             </div>
-            <button className="btn btn-primary" type="submit" disabled={loading} style={{ width: "100%" }}>
+            <button
+              className="btn btn-primary"
+              type="submit"
+              disabled={loading || !code.trim()}
+              style={{ width: "100%" }}
+            >
               {loading ? <Loader2 size={16} /> : null}
               Verificar
             </button>
@@ -177,7 +182,12 @@ export function LoginPage({ apiBaseUrl, onLogin }: Props) {
                 required
               />
             </div>
-            <button className="btn btn-primary" type="submit" disabled={loading} style={{ width: "100%" }}>
+            <button
+              className="btn btn-primary"
+              type="submit"
+              disabled={loading || !backupCode.trim()}
+              style={{ width: "100%" }}
+            >
               {loading ? <Loader2 size={16} /> : null}
               Recuperar acesso
             </button>
