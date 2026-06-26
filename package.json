@@ -1,9 +1,9 @@
 {
-  "name": "stepgo-atendente-desktop",
+  "name": "nive-atendente-desktop",
   "version": "1.0.0",
-  "description": "Cliente Windows de atendimento humano StepGo — roda na bandeja do sistema",
+  "description": "Cliente Windows de atendimento humano Nive — roda na bandeja do sistema",
   "main": "dist-electron/main.js",
-  "author": "StepGo",
+  "author": "Nive Sistemas",
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
@@ -35,9 +35,9 @@
     "vite-plugin-electron-renderer": "^0.14.6"
   },
   "build": {
-    "appId": "com.stepgo.atendente",
-    "productName": "StepGo Atendente",
-    "copyright": "Copyright © StepGo",
+    "appId": "com.nive.atendente",
+    "productName": "Nive Atendente",
+    "copyright": "Copyright © Nive Sistemas",
     "directories": {
       "output": "release",
       "buildResources": "build"
@@ -49,7 +49,7 @@
       "build/tray.png",
       "build/notification.wav",
       "build/brand/**/*",
-      "public/stepgo-icon.png"
+      "public/nive-icon.png"
     ],
     "win": {
       "target": [
@@ -68,7 +68,7 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "StepGo Atendente",
+      "shortcutName": "Nive Atendente",
       "runAfterFinish": true,
       "installerLanguages": [
         "pt_BR"

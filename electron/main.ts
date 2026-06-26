@@ -84,7 +84,7 @@ function buildTrayMenu() {
       : "Nenhum atendimento na fila";
 
   return Menu.buildFromTemplate([
-    { label: "StepGo Atendente", enabled: false },
+    { label: "Nive Atendente", enabled: false },
     { type: "separator" },
     { label: waitingLabel, enabled: false },
     {
@@ -113,7 +113,7 @@ function updateTrayTooltip(waitingCount: number) {
   lastWaitingCount = waitingCount;
   if (!tray) return;
 
-  const base = "StepGo Atendente";
+  const base = "Nive Atendente";
   tray.setToolTip(
     waitingCount > 0 ? `${base} — ${waitingCount} na fila` : `${base} — online`,
   );
@@ -147,7 +147,7 @@ function playNewAttendanceSound() {
 
 function createTray() {
   tray = new Tray(createTrayIcon());
-  tray.setToolTip("StepGo Atendente");
+  tray.setToolTip("Nive Atendente");
   tray.setContextMenu(buildTrayMenu());
 
   tray.on("double-click", () => showMainWindow());
@@ -189,7 +189,7 @@ function openConversationWindow(conversationId: string, title?: string) {
     minHeight: 560,
     show: false,
     autoHideMenuBar: true,
-    title: title ? `Atendimento — ${title}` : "Atendimento StepGo",
+    title: title ? `Atendimento — ${title}` : "Atendimento Nive",
     icon: path.join(__dirname, "../build/icon.png"),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -227,7 +227,7 @@ function createWindow() {
     minHeight: 560,
     show: false,
     autoHideMenuBar: true,
-    title: "StepGo Atendente",
+    title: "Nive Atendente",
     icon: path.join(__dirname, "../build/icon.png"),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -322,7 +322,7 @@ function registerIpc() {
   ipcMain.handle("conversation:set-title", (event, title: string) => {
     const window = BrowserWindow.fromWebContents(event.sender);
     if (!window || window === mainWindow) return false;
-    window.setTitle(title ? `Atendimento — ${title}` : "Atendimento StepGo");
+    window.setTitle(title ? `Atendimento — ${title}` : "Atendimento Nive");
     return true;
   });
 

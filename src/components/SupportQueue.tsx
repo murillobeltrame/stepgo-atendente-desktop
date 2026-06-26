@@ -51,7 +51,7 @@ export function SupportQueue({ onQueueUpdate }: Props) {
 
   const openConversation = (conversation: SupportConversation) => {
     const title = conversation.storeUserName || conversation.storeSlug;
-    void window.stepgoDesktop.openConversation(conversation.id, title);
+    void window.niveDesktop.openConversation(conversation.id, title);
   };
 
   return (

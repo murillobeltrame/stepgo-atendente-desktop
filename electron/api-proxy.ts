@@ -39,7 +39,7 @@ function friendlyNetworkError(message: string) {
     return "O servidor demorou para responder. Tente novamente.";
   }
   if (lower === "fetch failed" || lower.includes("network")) {
-    return "Não foi possível conectar ao servidor StepGo. Verifique sua internet e a URL do servidor.";
+    return "Não foi possível conectar ao servidor Nive. Verifique sua internet e a URL do servidor.";
   }
 
   return message;
@@ -49,7 +49,7 @@ function buildMultipartBody(
   fields: Record<string, string>,
   file: ApiMultipartFile,
 ): { body: Buffer; boundary: string } {
-  const boundary = `----StepGoForm${Date.now().toString(36)}`;
+  const boundary = `----NiveForm${Date.now().toString(36)}`;
   const chunks: Buffer[] = [];
 
   const appendText = (text: string) => {
@@ -142,8 +142,8 @@ export async function proxyApiRequest(payload: ApiRequestPayload): Promise<ApiRe
   const url = `${payload.baseUrl.replace(/\/$/, "")}${payload.path}`;
   const headers: Record<string, string> = {
     Accept: "application/json",
-    "X-StepGo-Client": "desktop",
-    "User-Agent": "StepGo-Atendente-Desktop/1.0",
+    "X-Nive-Client": "desktop",
+    "User-Agent": "Nive-Atendente-Desktop/1.0",
   };
 
   if (payload.token) {

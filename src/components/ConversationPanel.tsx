@@ -62,7 +62,7 @@ function MessageAttachment({
     <button
       type="button"
       className="attachment-file-link"
-      onClick={() => window.stepgoDesktop.openExternalUrl(message.attachmentUrl!)}
+      onClick={() => window.niveDesktop.openExternalUrl(message.attachmentUrl!)}
     >
       📎 {message.attachmentFileName ?? "Anexo"}
     </button>
@@ -106,7 +106,7 @@ export function ConversationPanel({ conversationId }: Props) {
   useEffect(() => {
     if (!selected) return;
     const title = `${selected.storeUserName || "Lojista"} · ${selected.storeSlug}`;
-    void window.stepgoDesktop.setConversationTitle(title);
+    void window.niveDesktop.setConversationTitle(title);
   }, [selected?.id, selected?.storeSlug, selected?.storeUserName]);
 
   useEffect(() => {

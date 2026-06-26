@@ -74,7 +74,7 @@ export type ApiRequestResult = {
 
 declare global {
   interface Window {
-    stepgoDesktop: {
+    niveDesktop: {
       getSettings: () => Promise<AppSettings>;
       setSettings: (partial: Partial<AppSettings>) => Promise<boolean>;
       clearSession: () => Promise<boolean>;

@@ -9,7 +9,7 @@ export type AppSettings = {
   soundEnabled: boolean;
 };
 
-contextBridge.exposeInMainWorld("stepgoDesktop", {
+contextBridge.exposeInMainWorld("niveDesktop", {
   getSettings: (): Promise<AppSettings> => ipcRenderer.invoke("settings:get"),
   setSettings: (partial: Partial<AppSettings>): Promise<boolean> =>
     ipcRenderer.invoke("settings:set", partial),

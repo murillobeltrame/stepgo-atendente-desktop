@@ -8,10 +8,13 @@ const projectRoot = path.join(__dirname, "..");
 const buildDir = path.join(projectRoot, "build");
 const brandDir = path.join(buildDir, "brand");
 const publicDir = path.join(projectRoot, "public");
+const siteRoot = path.join(projectRoot, "..", "stepgosistemassite");
 
 const siteIconCandidates = [
-  path.join(projectRoot, "..", "stepgosistemassite", "src", "app", "icon.png"),
-  path.join(projectRoot, "..", "stepgosistemassite", "public", "logo.png"),
+  path.join(siteRoot, "src", "app", "icon.png"),
+  path.join(siteRoot, "assets", "icon-mark-source.png"),
+  path.join(siteRoot, "public", "icon.png"),
+  path.join(siteRoot, "public", "logo.png"),
   path.join(brandDir, "icon-source.png"),
 ];
 
@@ -20,7 +23,7 @@ function resolveBrandSource() {
     if (fs.existsSync(candidate)) return candidate;
   }
   throw new Error(
-    "Ícone StepGo não encontrado. Copie stepgosistemassite/src/app/icon.png para build/brand/icon-source.png.",
+    "Ícone Nive não encontrado. Copie stepgosistemassite/src/app/icon.png para build/brand/icon-source.png.",
   );
 }
 
@@ -84,18 +87,17 @@ async function main() {
   fs.mkdirSync(publicDir, { recursive: true });
 
   const source = resolveBrandSource();
+  const iconSourcePath = path.join(brandDir, "icon-source.png");
 
-  if (!fs.existsSync(path.join(brandDir, "icon-source.png"))) {
-    fs.copyFileSync(source, path.join(brandDir, "icon-source.png"));
-  }
+  fs.copyFileSync(source, iconSourcePath);
 
   await writePng(source, 256, path.join(buildDir, "icon.png"));
   await writePng(source, 32, path.join(buildDir, "tray.png"));
-  await writePng(source, 128, path.join(publicDir, "stepgo-icon.png"));
+  await writePng(source, 128, path.join(publicDir, "nive-icon.png"));
   await writeIco(source, path.join(brandDir, "favicon.ico"), [16, 32, 48, 256]);
   writeNotificationSound(path.join(buildDir, "notification.wav"));
 
-  console.log(`Ícones StepGo gerados a partir de: ${source}`);
+  console.log(`Ícones Nive gerados a partir de: ${source}`);
 }
 
 function writeNotificationSound(outputPath) {
@@ -112,7 +114,7 @@ function writeNotificationSound(outputPath) {
     for (let i = 0; i < toneSamples; i += 1) {
       const t = i / sampleRate;
       const attack = Math.min(1, t * 60);
-      const release = Math.exp(-10 * t / tone.duration);
+      const release = Math.exp((-10 * t) / tone.duration);
       samples.push(Math.sin(2 * Math.PI * tone.frequency * t) * attack * release * 0.35);
     }
 

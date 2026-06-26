@@ -1,6 +1,6 @@
-# StepGo Atendente — Desktop Windows
+# Nive Atendente — Desktop Windows
 
-Cliente Windows para atendentes humanos do StepGo. Fica na **bandeja do sistema** (ao lado do relógio), recebe notificações quando entra alguém na fila e permite responder várias conversas ao mesmo tempo.
+Cliente Windows para atendentes humanos da Nive. Fica na **bandeja do sistema** (ao lado do relógio), recebe notificações quando entra alguém na fila e permite responder várias conversas ao mesmo tempo.
 
 ## Por que Electron?
 
@@ -13,7 +13,7 @@ Cliente Windows para atendentes humanos do StepGo. Fica na **bandeja do sistema*
 
 - Windows 10/11 (64 bits)
 - Node.js 20+
-- O site StepGo (`stepgosistemassite`) rodando e acessível na rede
+- O site Nive (`stepgosistemassite`) rodando e acessível na rede
 
 ## Desenvolvimento
 
@@ -23,7 +23,7 @@ npm install
 npm run dev
 ```
 
-O app abre em modo desenvolvimento com hot reload. Na primeira execução, configure a URL do servidor em **Configurações** (ex.: `http://localhost:3000` em dev ou `https://seu-dominio.com.br` em produção).
+O app abre em modo desenvolvimento com hot reload. Na primeira execução, configure a URL do servidor em **Configurações** (ex.: `http://localhost:3000` em dev ou `https://nivesistemas.com.br` em produção).
 
 ## Gerar instalador Windows
 
@@ -34,17 +34,17 @@ npm run dist
 O instalador será gerado em:
 
 ```
-%LOCALAPPDATA%\stepgo-atendente-desktop\release\
+%LOCALAPPDATA%\nive-atendente-desktop\release\
 ```
 
-Exemplo: `C:\Users\SeuUsuario\AppData\Local\stepgo-atendente-desktop\release\`
+Exemplo: `C:\Users\SeuUsuario\AppData\Local\nive-atendente-desktop\release\`
 
 > Se existir uma pasta `release/` antiga dentro do projeto (OneDrive), você pode apagá-la manualmente — ela não é mais usada.
 
 ## Uso diário
 
 1. Instale o app no Windows de cada atendente
-2. Faça login com a conta de administrador StepGo (suporta 2FA)
+2. Faça login com a conta de administrador Nive (suporta 2FA)
 3. Feche a janela — o app **continua rodando na bandeja**
 4. Clique no ícone da bandeja para abrir o painel
 5. Notificações aparecem quando novos atendimentos entram na fila
@@ -53,7 +53,7 @@ Exemplo: `C:\Users\SeuUsuario\AppData\Local\stepgo-atendente-desktop\release\`
 
 | Opção | Descrição |
 |-------|-----------|
-| URL do servidor | Endereço do site StepGo com as APIs de suporte |
+| URL do servidor | Endereço do site Nive com as APIs de suporte |
 | Iniciar minimizado | Abre só na bandeja, sem mostrar a janela |
 | Som nas notificações | Alerta sonoro quando a fila cresce |
 
@@ -78,4 +78,4 @@ stepgo-atendente-desktop/
 
 ## Ícones
 
-Execute `node scripts/generate-icons.mjs` para regenerar os ícones a partir da marca StepGo (`build/brand/icon-source.png`).
+Execute `node scripts/generate-icons.mjs` para regenerar os ícones a partir da marca Nive (`build/brand/icon-source.png`).

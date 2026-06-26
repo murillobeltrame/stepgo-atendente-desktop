@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import stepgoIconUrl from "../../build/brand/icon-source.png";
+import brandIconUrl from "../../build/brand/icon-source.png";
 import { login, recoverTwoFactor, verifyTwoFactor } from "@/lib/api";
 import type { AdminInfo } from "@/types";
 
@@ -77,14 +77,14 @@ export function LoginPage({ apiBaseUrl, onLogin }: Props) {
       <div className="card login-card">
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
           <img
-            src={stepgoIconUrl}
-            alt="StepGo"
+            src={brandIconUrl}
+            alt="Nive"
             width={42}
             height={42}
             style={{ borderRadius: 12, objectFit: "contain" }}
           />
           <div>
-            <h2>StepGo Atendente</h2>
+            <h2>Nive Atendente</h2>
             <p style={{ margin: 0 }}>Entre com sua conta de administrador</p>
           </div>
         </div>

@@ -33,7 +33,7 @@ export function App() {
   const [admin, setAdmin] = useState<AdminInfo | null>(null);
 
   useEffect(() => {
-    void window.stepgoDesktop.getSettings().then((loaded) => {
+    void window.niveDesktop.getSettings().then((loaded) => {
       setSettings(loaded);
       configureApi(loaded.apiBaseUrl, loaded.token);
       if (loaded.token) {
@@ -46,7 +46,7 @@ export function App() {
     });
 
     if (!isConversationWindow) {
-      return window.stepgoDesktop.onNavigate((path) => {
+      return window.niveDesktop.onNavigate((path) => {
         if (path.includes("settings")) setView("settings");
       });
     }
@@ -55,11 +55,11 @@ export function App() {
   }, [isConversationWindow]);
 
   const handleLogin = async (token: string, loggedAdmin: AdminInfo) => {
-    await window.stepgoDesktop.setSettings({
+    await window.niveDesktop.setSettings({
       token,
       adminName: loggedAdmin.name,
     });
-    const next = await window.stepgoDesktop.getSettings();
+    const next = await window.niveDesktop.getSettings();
     setSettings(next);
     configureApi(next.apiBaseUrl, token);
     setAdmin(loggedAdmin);
@@ -68,8 +68,8 @@ export function App() {
   };
 
   const handleLogout = async () => {
-    await window.stepgoDesktop.clearSession();
-    const next = await window.stepgoDesktop.getSettings();
+    await window.niveDesktop.clearSession();
+    const next = await window.niveDesktop.getSettings();
     setSettings(next);
     configureApi(next.apiBaseUrl, null);
     setAdmin(null);
@@ -77,14 +77,14 @@ export function App() {
   };
 
   const handleSaveSettings = async (partial: Partial<AppSettings>) => {
-    await window.stepgoDesktop.setSettings(partial);
-    const next = await window.stepgoDesktop.getSettings();
+    await window.niveDesktop.setSettings(partial);
+    const next = await window.niveDesktop.getSettings();
     setSettings(next);
     configureApi(next.apiBaseUrl, next.token);
   };
 
   const handleQueueUpdate = useCallback((waitingCount: number) => {
-    window.stepgoDesktop.updateQueue(waitingCount);
+    window.niveDesktop.updateQueue(waitingCount);
   }, []);
 
   if (!ready || !settings) {

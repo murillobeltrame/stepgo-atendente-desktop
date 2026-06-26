@@ -14,7 +14,7 @@ type JsonRequestInit = {
 };
 
 async function request<T>(path: string, init?: JsonRequestInit): Promise<T> {
-  const result = await window.stepgoDesktop.apiRequest({
+  const result = await window.niveDesktop.apiRequest({
     baseUrl: apiBaseUrl,
     path,
     method: init?.method,
@@ -70,7 +70,7 @@ export async function login(email: string, password: string): Promise<LoginResul
 
   if (!json.token || !json.admin) {
     throw new Error(
-      "O servidor não retornou a sessão do desktop. Atualize o site StepGo para a versão mais recente.",
+      "O servidor não retornou a sessão do desktop. Atualize o site Nive para a versão mais recente.",
     );
   }
 
@@ -153,7 +153,7 @@ export async function sendMessage(
 }
 
 export async function uploadAttachment(file: File, storeSlug: string) {
-  const result = await window.stepgoDesktop.apiRequest({
+  const result = await window.niveDesktop.apiRequest({
     baseUrl: apiBaseUrl,
     path: "/api/admin/support/attachments",
     method: "POST",

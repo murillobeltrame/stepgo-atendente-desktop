@@ -42,7 +42,7 @@ export function SettingsPage({ settings, onSave, onBack }: Props) {
         <h2>Configurações</h2>
         <form onSubmit={handleSubmit}>
           <div className="field">
-            <label htmlFor="api-url">URL do servidor StepGo</label>
+            <label htmlFor="api-url">URL do servidor Nive</label>
             <input
               id="api-url"
               value={apiBaseUrl}

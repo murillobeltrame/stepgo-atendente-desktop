@@ -20,7 +20,7 @@ function rmSafe(dir) {
 // Build fora do OneDrive — evita EPERM/EBUSY durante o empacotamento.
 const outputDir = path.join(
   process.env.LOCALAPPDATA || path.join(os.homedir(), "AppData", "Local"),
-  "stepgo-atendente-desktop",
+  "nive-atendente-desktop",
   "release",
 );
 
