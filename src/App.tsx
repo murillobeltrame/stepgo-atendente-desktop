@@ -104,10 +104,7 @@ export function App() {
       <header className="app-header">
         <div className="app-header-intro">
           <h1>Atendimento humano</h1>
-          <p>
-            Olá, {admin.name}. Cada atendimento abre em uma janela separada para você atender
-            vários ao mesmo tempo.
-          </p>
+          <p className="app-header-greeting">Olá, {admin.name}</p>
         </div>
         <div className="header-actions">
           <span className="status-badge">Online</span>

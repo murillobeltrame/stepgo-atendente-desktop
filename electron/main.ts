@@ -221,10 +221,10 @@ function openConversationWindow(conversationId: string, title?: string) {
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 520,
-    height: 780,
-    minWidth: 360,
-    minHeight: 560,
+    width: 960,
+    height: 720,
+    minWidth: 480,
+    minHeight: 520,
     show: false,
     autoHideMenuBar: true,
     title: "Nive Atendente",

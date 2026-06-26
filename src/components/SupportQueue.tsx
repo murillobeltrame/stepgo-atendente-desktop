@@ -57,42 +57,39 @@ export function SupportQueue({ onQueueUpdate }: Props) {
   return (
     <div className="queue-layout">
       <section className="card inbox-sidebar queue-only">
-        <div className="inbox-sidebar-header">
-          <div className="queue-section-title">
-            <Headphones size={16} color="var(--brand-dark)" />
-            <strong>Fila de atendimento</strong>
-          </div>
-          <p className="queue-section-hint">
-            Clique em um atendimento para abrir em uma nova janela.
-          </p>
-          <div className="filter-row-scroll">
-            <div className="filter-row" role="tablist" aria-label="Filtros da fila">
-              {FILTERS.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={filter === item.id}
-                  className={`filter-pill ${filter === item.id ? "active" : ""}`}
-                  onClick={() => setFilter(item.id)}
-                >
-                  {item.label}
-                </button>
-              ))}
+        <div className="inbox-sidebar-header inbox-toolbar">
+          <div className="inbox-toolbar-row">
+            <div className="queue-section-title">
+              <Headphones size={16} color="var(--brand-dark)" />
+              <strong>Fila de atendimento</strong>
+            </div>
+            <div className="filter-row-scroll">
+              <div className="filter-row" role="tablist" aria-label="Filtros da fila">
+                {FILTERS.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={filter === item.id}
+                    className={`filter-pill ${filter === item.id ? "active" : ""}`}
+                    onClick={() => setFilter(item.id)}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="conversation-list">
+        <div className={`conversation-list${conversations.length === 0 && !inboxQuery.isLoading ? " is-empty" : ""}`}>
           {inboxQuery.isLoading ? (
             <div style={{ display: "flex", gap: 8, padding: 12, color: "var(--muted)" }}>
               <Loader2 size={16} className="spin" />
               Carregando fila…
             </div>
           ) : conversations.length === 0 ? (
-            <p style={{ padding: 12, color: "var(--muted)", fontSize: "0.85rem" }}>
-              Nenhum atendimento nesta visão.
-            </p>
+            <p className="conversation-empty">Nenhum atendimento nesta visão.</p>
           ) : (
             conversations.map((conversation) => (
               <button
