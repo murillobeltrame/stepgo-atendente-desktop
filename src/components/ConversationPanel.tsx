@@ -5,10 +5,12 @@ import {
   claimConversation,
   closeConversation,
   fetchConversation,
+  markConversationRead,
   sendMessage,
   uploadAttachment,
 } from "@/lib/api";
 import { handleSupportComposerKeyDown } from "@/lib/composer-keydown";
+import { DeliveryTicks } from "@/components/DeliveryTicks";
 import { ImageViewer } from "@/components/ImageViewer";
 import type { PendingAttachment, SupportMessage } from "@/types";
 
@@ -114,6 +116,14 @@ export function ConversationPanel({ conversationId }: Props) {
     if (!container) return;
     container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
   }, [selected?.messages?.length, conversationId]);
+
+  // Janela da conversa visível = lida; minimizada só confirma a entrega.
+  const lastMessageAt = selected?.messages?.at(-1)?.createdAt;
+  useEffect(() => {
+    if (!conversationId || !lastMessageAt) return;
+    const mode = document.visibilityState === "visible" ? "read" : "delivered";
+    void markConversationRead(conversationId, mode).catch(() => undefined);
+  }, [conversationId, lastMessageAt]);
 
   const invalidate = () => {
     void qc.invalidateQueries({ queryKey: ["support-inbox"] });
@@ -254,6 +264,7 @@ export function ConversationPanel({ conversationId }: Props) {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
+                  {role === "admin" ? <DeliveryTicks status={message.deliveryStatus} /> : null}
                 </p>
               </div>
             </div>

@@ -538,9 +538,18 @@ button {
 }
 
 .message-time {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
   margin-top: 4px;
   font-size: 0.68rem;
   opacity: 0.65;
+}
+
+.message-ticks {
+  display: inline-flex;
+  align-items: center;
 }
 
 .composer {

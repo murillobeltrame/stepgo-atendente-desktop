@@ -1,9 +1,13 @@
+/** Confirmação de leitura do chat: um risco, dois riscos, dois azuis. */
+export type SupportMessageDeliveryStatus = "SENT" | "DELIVERED" | "READ";
+
 export type SupportMessage = {
   id: string;
   senderType: "USER" | "ADMIN" | "SYSTEM";
   body: string;
   createdAt: string;
   senderName?: string | null;
+  deliveryStatus?: SupportMessageDeliveryStatus | null;
   attachmentUrl?: string | null;
   attachmentMimeType?: string | null;
   attachmentFileName?: string | null;
@@ -22,6 +26,7 @@ export type SupportConversation = {
   closedAt?: string | null;
   lastMessagePreview?: string;
   unreadForAdmin?: boolean;
+  awaitingReplyMinutes?: number;
   messages?: SupportMessage[];
 };
 

@@ -123,6 +123,11 @@ export async function fetchConversation(id: string) {
   }>(`/api/admin/support/conversations/${id}`);
 }
 
+/** Abriu a conversa no app: confirma a leitura pro lojista (risco azul). */
+export async function markConversationRead(id: string, mode: "delivered" | "read" = "read") {
+  return request(`/api/admin/support/conversations/${id}/read?mode=${mode}`, { method: "POST" });
+}
+
 export async function claimConversation(id: string) {
   return request(`/api/admin/support/conversations/${id}/claim`, { method: "POST" });
 }
