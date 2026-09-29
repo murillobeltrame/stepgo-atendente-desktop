@@ -13,7 +13,7 @@ Cliente Windows para atendentes humanos da Nive. Fica na **bandeja do sistema** 
 
 - Windows 10/11 (64 bits)
 - Node.js 20+
-- O site Nive (`stepgosistemassite`) rodando e acessível na rede
+- O site Nive (`nivesistemas`) rodando e acessível na rede
 
 ## Desenvolvimento
 
