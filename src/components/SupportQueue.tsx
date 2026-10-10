@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Headphones, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { fetchInbox } from "@/lib/api";
+import { formatBrazilDateTime } from "@/lib/dates";
 import type { InboxFilter, SupportConversation } from "@/types";
 
 const FILTERS: { id: InboxFilter; label: string }[] = [
@@ -111,7 +112,7 @@ export function SupportQueue({ onQueueUpdate }: Props) {
                 <p className="conversation-meta">
                   {statusLabel(conversation.status)}
                   {filter === "closed" && conversation.closedAt
-                    ? ` · ${new Date(conversation.closedAt).toLocaleString("pt-BR")}`
+                    ? ` · ${formatBrazilDateTime(conversation.closedAt, { seconds: true, fallback: "" })}`
                     : ""}
                   {conversation.assignedAdminName ? ` · ${conversation.assignedAdminName}` : ""}
                   {conversation.rating ? <> · {renderStars(conversation.rating)}</> : null}

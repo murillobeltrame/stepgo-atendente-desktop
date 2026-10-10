@@ -9,6 +9,7 @@ import {
   sendMessage,
   uploadAttachment,
 } from "@/lib/api";
+import { formatBrazilTime } from "@/lib/dates";
 import { handleSupportComposerKeyDown } from "@/lib/composer-keydown";
 import { DeliveryTicks } from "@/components/DeliveryTicks";
 import { ImageViewer } from "@/components/ImageViewer";
@@ -260,10 +261,7 @@ export function ConversationPanel({ conversationId }: Props) {
                 />
                 {message.body ? <p style={{ margin: 0 }}>{message.body}</p> : null}
                 <p className="message-time">
-                  {new Date(message.createdAt).toLocaleTimeString("pt-BR", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
+                  {formatBrazilTime(message.createdAt, "")}
                   {role === "admin" ? <DeliveryTicks status={message.deliveryStatus} /> : null}
                 </p>
               </div>
