@@ -4,6 +4,20 @@ import brandIconUrl from "../../build/brand/icon-source.png";
 import { login, recoverTwoFactor, verifyTwoFactor } from "@/lib/api";
 import type { AdminInfo } from "@/types";
 
+/** Códigos copiados do autenticador costumam vir com espaço ("123 456") ou hífen. */
+function cleanCode(value: string) {
+  return value.replace(/[\s-]/g, "");
+}
+
+/** Cola direto da área de transferência quando o toque longo no campo não oferece "Colar". */
+async function pasteCode(setter: (value: string) => void) {
+  try {
+    setter(cleanCode(await navigator.clipboard.readText()));
+  } catch {
+    /* permissão negada: o campo continua aceitando colar normalmente */
+  }
+}
+
 type Props = {
   apiBaseUrl: string;
   onLogin: (token: string, admin: AdminInfo) => Promise<void>;
@@ -136,9 +150,12 @@ export function LoginPage({ apiBaseUrl, onLogin }: Props) {
                 inputMode="numeric"
                 autoComplete="one-time-code"
                 value={code}
-                onChange={(e) => setCode(e.target.value)}
+                onChange={(e) => setCode(cleanCode(e.target.value))}
                 required
               />
+              <button type="button" className="btn btn-ghost" onClick={() => void pasteCode(setCode)}>
+                Colar código
+              </button>
             </div>
             <button
               className="btn btn-primary"
@@ -178,7 +195,7 @@ export function LoginPage({ apiBaseUrl, onLogin }: Props) {
               <input
                 id="backup"
                 value={backupCode}
-                onChange={(e) => setBackupCode(e.target.value)}
+                onChange={(e) => setBackupCode(cleanCode(e.target.value))}
                 required
               />
             </div>
