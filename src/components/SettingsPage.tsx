@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { readTheme, saveTheme, type Theme } from "@/lib/theme";
 import type { AppSettings } from "@/types";
 
 type Props = {
@@ -11,6 +12,7 @@ export function SettingsPage({ settings, onSave, onBack }: Props) {
   const [apiBaseUrl, setApiBaseUrl] = useState(settings.apiBaseUrl);
   const [autoStartMinimized, setAutoStartMinimized] = useState(settings.autoStartMinimized);
   const [soundEnabled, setSoundEnabled] = useState(settings.soundEnabled);
+  const [theme, setTheme] = useState<Theme>(readTheme);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -72,6 +74,21 @@ export function SettingsPage({ settings, onSave, onBack }: Props) {
             />
             Tocar som nas notificações de nova fila
           </label>
+
+          <div className="field">
+            <label>Aparência</label>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => {
+                const next: Theme = theme === "dark" ? "light" : "dark";
+                saveTheme(next);
+                setTheme(next);
+              }}
+            >
+              {theme === "dark" ? "☀ Modo claro" : "☾ Modo escuro"}
+            </button>
+          </div>
 
           <button className="btn btn-primary" type="submit" disabled={saving}>
             {saving ? "Salvando…" : "Salvar"}
